@@ -11,7 +11,7 @@ import requests
 from twitchdl import twitch, download
 from moviepy.editor import *
 
-import aux
+import extra
 import main
 from main import labels
 
@@ -24,11 +24,11 @@ def twitchVideoDownload(video_id, twitch_get_func, video_number):
     print(labels.get("vutils_video_auth"))
     twitch_download = twitch_get_func(video_id)
     twitch_access_token = twitch.get_access_token(video_id)
-    twitch_playlist_uri = list(aux.parse_playlists(twitch.get_playlists(video_id, twitch_access_token)))[1][2]
+    twitch_playlist_uri = list(extra.parse_playlists(twitch.get_playlists(video_id, twitch_access_token)))[1][2]
     twitch_playlist_response = requests.get(twitch_playlist_uri)
     twitch_playlist_response.raise_for_status()
     twitch_playlist = m3u8.loads(twitch_playlist_response.text)
-    twitch_vod_list = aux.get_vod_paths(twitch_playlist)
+    twitch_vod_list = extra.get_vod_paths(twitch_playlist)
 
     print(labels.get("vutils_video_download"))
     twitch_downloaded_vods = download.download_files(re.sub("/[^/]+$", "/", twitch_playlist_uri), "twitchtmp/", twitch_vod_list, 3)
